@@ -1,23 +1,46 @@
 package main
 
 import (
-	"fmt"
+	"insta-api/controllers"
 	"insta-api/databases"
 	"log"
 	"net/http"
 )
 
-func Home(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello! This is the Home Page ") // send data to client side
-}
-
 func main() {
+	//DB Connection
 	databases.Connectdb()
 
-	http.HandleFunc("/", Home)                 // set router
-	error := http.ListenAndServe(":9090", nil) // set listen port
-	if error != nil {
-		log.Fatal("ListenAndServe: ", error)
+	//Setting Routes
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", controllers.Home)
+	mux.HandleFunc("/users", controllers.UserHandler)
+	mux.HandleFunc("/posts", controllers.PostHandler)
+	mux.HandleFunc("/posts/users", controllers.BothHandler)
+
+	//listening the Ports
+	err := http.ListenAndServe(":9090", nil) // set listen port
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
 	}
 
 }
+
+//Another Method to make the routes and related function without controllers folder
+// func userhandler(w http.ResponseWriter, r *http.Request) {
+
+// }
+
+// func posthandler(w http.ResponseWriter, r *http.Request) {
+
+// }
+
+// func bothhandler(w http.ResponseWriter, r *http.Request) {
+
+// }
+// func Route()  {
+// 	mux := http.NewServeMux()
+// 	mux.HandleFunc("/users", userhandler)
+// 	mux.HandleFunc("/posts", posthandler)
+// 	mux.HandleFunc("/posts/users", bothhandler)
+// }
